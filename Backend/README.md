@@ -3,4 +3,5 @@
 ### -  Express
 ### -  MiddleWare
 ### -  Input validation using zod
-### - jsonwebtoken
+### - JWT jsonwebtoken
+### - MongoDB
