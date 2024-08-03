@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .main {
+            width:auto;
+            height: auto;
+            background-color: red;
+            
+        }
+        
+    </style>
+    
+
+
+    <title>Simple Interest Calculator</title>
+</head>
+<body>
+    <script>
+        async function simpleInterest() {
+            const principal = document.getElementById("principal").value;
+            const rate = document.getElementById("rate").value;
+            const time = document.getElementById("time").value;
+            console.log(principal, rate, time);
+
+            const url1 = `http://localhost:3000/simple?principal=${encodeURIComponent(principal)}&rate=${encodeURIComponent(rate)}&time=${encodeURIComponent(time)}`;
+
+            const url = `https://sum-server.100xdevs.com/interest?principal=${encodeURIComponent(principal)}&rate=${encodeURIComponent(rate)}&time=${encodeURIComponent(time)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log("total"+data.total)
+                const container = document.getElementById("container");
+                
+                    container.innerHTML = `Total Amount = ${data.total} <br/> Total Interest = ${data.interest}`;
+               
+            } catch (error) {
+                const container = document.getElementById("container");
+                container.innerHTML = "An error occurred. Please try again.";
+                console.error("Error:", error);
+            }
+        }
+    </script>
+
+
+
+<div class="main">
+    <div>
+        <input id="principal" type="text" placeholder="Enter Principal Amount">
+        <input id="rate" type="text" placeholder="Enter Rate of Interest">
+        <input id="time" type="text" placeholder="Enter Time in Years">
+    </div>
+
+    <button onclick="simpleInterest()">Calculate</button>
+
+    <div id="container"></div>
+</div>
+    
+
+   
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add</title>
+
+    <script>
+
+        function debouncingAddSum(){
+            let timeout ;
+            clearTimeout(timeout);
+            timeout = setTimeout(function(){
+                addSum()
+            },1000)
+
+        }
+        // Debounicng and throtlling
+        function  addSum(){
+            const a = document.getElementById("firstNumber").value;
+            const b = document.getElementById("secondNumber").value;
+            // const element = document.getElementById("finalSum");
+        //    const ans =  element.innerHTML = parseInt(a)+parseInt(b);
+            const url = `https://sum-server.100xdevs.com/sum?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`
+        fetch (url)
+        .then(function(response){
+            response.text()
+            .then(function(ans){
+               const res=  document.getElementById("finalSum").innerHTML = ans;
+               console.log(res)
+            })
+        })
+
+           console.log(ans)
+        }
+       </script>
+
+</head>
+<body>
+    
+   <input oninput="debouncingAddSum()"  id="firstNumber" type="text" placeholder="first number"> <br> <br>  
+
+   <input  oninput="debouncingAddSum()"  id="secondNumber"  type="text" placeholder=" Second Number"><br> <br>  
+   
+   <!-- <button onclick="debouncingAddSum()">Add </button> -->
+
+   <div  id="finalSum" class="">
+
+   </div> 
+
+  
+   
+</html>
