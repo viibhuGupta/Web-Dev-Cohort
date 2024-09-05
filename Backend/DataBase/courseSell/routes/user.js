@@ -25,8 +25,11 @@ router.get("/courses", async (req, res) => {
 });
 
 router.post("/courses/:courseID", userMiddleware, async (req, res) => {
-  const courseID = req.params.courseID;
-  const username = req.headers.username;
+  // const courseID = req.params.courseID;
+  // const username = req.headers.username;
+
+  const username = req.username;
+  console.log(username);
 
   await User.updateOne(
     {
@@ -46,21 +49,20 @@ router.post("/courses/:courseID", userMiddleware, async (req, res) => {
 
 router.get("/purchasedCourses", userMiddleware, async (req, res) => {
   const user = await User.findOne({
-    username: req.headers.username
+    username: req.headers.username,
   });
 
   console.log(user.purchasedCourses);
   const course = await Course.find({
-    _id:{
-      "$in":user.purchasedCourses
-    }
-  })
+    _id: {
+      $in: user.purchasedCourses,
+    },
+  });
   res.json({
-    course:course
+    course: course,
   });
 });
 
 module.exports = router;
-
 
 // 1:19

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 // connect mongoose
 
 mongoose.connect(
-  "mongodb+srv://vikramkrgupta01:QZ4KkoJI7DMiPwjY@cluster0.kolnqwy.mongodb.net/CourseProj"
+  "mongodb+srv://vikramkrgupta01:QZ4KkoJI7DMiPwjY@cluster0.kolnqwy.mongodb.net/CourseProj_2"
 );
 
 // define schema
