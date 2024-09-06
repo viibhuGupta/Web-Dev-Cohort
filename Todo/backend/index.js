@@ -1,19 +1,55 @@
 import express from "express";
+import { createTodo } from "./type";
+import { todo } from "./dbConnection";
 const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
+app.post("/todo", async function (req, res) {
+  const createPayLoad = req.body;
+  const parsedPayload = createTodo.safeParse(createPayLoad);
+  if (!parsedPayload) {
+    res.status(411).json({
+      msg: "You send the wrong Input",
+    });
+    return;
+  }
+  
+  //put into mongo DB
+  await todo.create({
+    title: createPayLoad.title,
+    description: createPayLoad.description,
+    completed: false,
+  });
+  res.json({
+    msg: "Todo Created ",
+  });
+});
 
-app.get("/",function(req,res){
-    res.send("Hy , You are in Home Page")
-})
+app.get("/todos", async function (req, res) {
+  const todos =  await todo.todo.find({});
+  res.json({
+    todos
+  })
+});
 
-app.post("/todos",(req , res)=> {
-const createPayLoad = req.body;
-const parsedPayload =  createTodo.safeParse(createPayLoad);
-})
+app.post("/completed", (req, res) => {
+  const updatePayLoad = req.body;
+  const parsedPayload = createTodo.safeParse(updatePayLoad);
+  if (!parsedPayload) {
+    res.status(411).json({
+      msg: "You send the wrong inputs",
+    });
+    return
+
+  }
+  await todo.update({
+    _id:req.body.id
+},{
+    completed:true
+});
 
 const port = 8080;
-app.listen(port,()=>{
-    console.log(`App listen at port no : ${port}`)
-});
+app.listen(port, () => {
+  console.log(`App listen at port no : ${port}`);
+})
