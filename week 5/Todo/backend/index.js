@@ -1,9 +1,11 @@
-import express from "express";
-import { createTodo } from "./type";
-import { todo } from "./dbConnection";
+const express = require("express");
+const { createTodo } = require("./type");
+const { todo } = require("./dbConnection");
+const cors = require("cors");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.post("/todo", async function (req, res) {
   const createPayLoad = req.body;
@@ -27,7 +29,7 @@ app.post("/todo", async function (req, res) {
 });
 
 app.get("/todos", async function (req, res) {
-  const todos = await todo.todo.find({});
+  const todos = await todo.find({});
   res.json({
     todos,
   });
@@ -40,7 +42,7 @@ app.post("/completed", async (req, res) => {
     res.status(411).json({
       msg: "You send the wrong inputs",
     });
-    return; 
+    return;
   }
   await todo.update(
     {
