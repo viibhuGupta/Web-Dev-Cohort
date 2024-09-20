@@ -6,8 +6,8 @@ const recipeSchema = z.object({
   ingredient: z.array(
     z.object({
       vegetableName: z.string().nonempty(),
-      quantity: z.number().positive(),
-      cookTime: z.number().positive(),
+      quantity: z.string().nonempty(),
+      cookTime: z.string().nonempty(),
     })
   ),
 });

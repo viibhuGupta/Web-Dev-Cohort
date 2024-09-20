@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const ingredientSchema = mongoose.Schema({
   vegetableName: String,
-  quantity: Number,
-  cookTime: Number,
+  quantity: String,
+  cookTime: String,
 });
 
 const recipeSchema = mongoose.Schema({
