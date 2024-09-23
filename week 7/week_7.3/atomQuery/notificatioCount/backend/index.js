@@ -10,6 +10,7 @@ app.get("/", async (req, res) => {
   const notificationCount = Math.floor(Math.random() * 200 + 1); //math.floor provide round value 4.7 => 4
   const messageCount = Math.floor(Math.random() * 100 + 1);
   const friendRequestCount = Math.floor(Math.random() * 50 + 1);
+ 
   const notification = new notificationModel({
     notification: notificationCount,
     friendrequest: friendRequestCount,
