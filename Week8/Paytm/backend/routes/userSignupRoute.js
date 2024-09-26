@@ -1,21 +1,15 @@
 const express = require("express");
-const {
-  validateUserSignupSchema,
-} = require("../validation/userVailidateSchema");
-const { UserSignupModel } = require("../schema/userSchema");
+const UserModel = require("../schema/userSchema");
+const { validateUserSignupSchema } = require("../validation/userVailidateSchema");
 const router = express.Router();
 
 router.post("/", validateUserSignupSchema, async (req, res) => {
   try {
-    const user = new UserSignupModel(req.body);
+    const user = new UserModel(req.body);
     await user.save();
-    res.status(201).json({
-      message: "user Signed up  Successfully!!",
-    });
+    res.status(201).json({ message: "User signed up successfully!" });
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 });
 

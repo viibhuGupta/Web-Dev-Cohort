@@ -3,29 +3,26 @@ const z = require("zod");
 const UserSignupSchema = z.object({
   firstName: z.string().nonempty(),
   lastName: z.string().nonempty(),
-  userName: z.string().min(5).max(10),
+  userName: z.string().min(3).max(10),
   email: z.string().email(),
-  phoneNumber: z
-    .string()
-    .length(10)
-    .regex(/^\d+$/, "Phone number must be numeric"), // Validate as numeric string,
+  phoneNumber: z.string().length(10).regex(/^\d+$/, "Phone number must be numeric"),
   password: z.string().min(8).max(15),
 });
 
 const UserSigninSchema = z.object({
-  userName: z.string().min(5).max(10),
+  userName: z.string().min(3).max(10),
   password: z.string().min(8).max(15),
 });
 
 const UpdateUserSchema = z.object({
-  firstName: z.string().nonempty(),
-  lastName: z.string().nonempty(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
   password: z.string().min(8).max(15),
 });
 
 const validateUserSignupSchema = (req, res, next) => {
   try {
-    UserSignupSchema.parse(req.body); // vailidate the  body against Schema
+    UserSignupSchema.parse(req.body);
     next();
   } catch (error) {
     return res.status(400).json({ error: error.errors });
@@ -34,7 +31,7 @@ const validateUserSignupSchema = (req, res, next) => {
 
 const validateUserSigninSchema = (req, res, next) => {
   try {
-    UserSignupSchema.parse(req.body); // vailidate the  body against Schema
+    UserSigninSchema.parse(req.body);
     next();
   } catch (error) {
     return res.status(400).json({ error: error.errors });
@@ -43,10 +40,10 @@ const validateUserSigninSchema = (req, res, next) => {
 
 const validateUpdateUserSchema = (req, res, next) => {
   try {
-    UpdateUserSchema.parse(req.body); // Validate the body against the Schema
+    UpdateUserSchema.parse(req.body);
     next();
   } catch (error) {
-    return res.status(400).json({ error: error.errors }); // Respond with validation errors
+    return res.status(400).json({ error: error.errors });
   }
 };
 
