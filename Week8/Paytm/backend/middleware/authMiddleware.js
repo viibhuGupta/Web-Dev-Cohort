@@ -1,49 +1,55 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 
-
 const authMiddleware = (req, res, next) => {
-
-//   const token1 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Mjc0NDk5ODh9.Gs8YJGM1g93wbgKrRJnfHqkBUMp9A9F48UkKxHgxJOg';
-// const secretKey = 'vibhuGupta'; // Replace with your actual secret key
-
-// try {
-//   const decoded = jwt.verify(token1, secretKey);
-//   console.log('Token is valid:', decoded);
-// } catch (error) {
-//   console.error('Token is invalid:', error.message);
-// }
-
-
-  // Extract Authorization header
-
-  const authHeader = req.headers.authorization; 
-
-  // Check if the Authorization header is present and starts with 'Bearer'
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(403).json({
-      message: "Access denied. No token provided.",
-    });
-  }
-
-  // Extract the token from the 'Bearer <token>' format
-  const token = authHeader.split(" ")[1];
-  console.log("token is ", token)
-
   try {
-    // Verify the token using the secret from environment variables
-    const decode = jwt.verify(token, JWT_SECRET);
-    console.log("decoded token:", decode);
+    
+    // Extract Authorization header
+    const authHeader = req.headers.authorization;
 
-    const userId = decode.userId
-    req.userId = userId; // Attach the user information to the request
-   
-    // console.log("req.userId:", req.userId);
+    // Check if the Authorization header is present and starts with 'Bearer'
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(403).json({
+        message: "Access denied. No token provided.",
+      });
+    }
+
+    // Extract the token from the 'Bearer <token>' format
+    const token = authHeader.split(" ")[1];
+    console.log("Received token : ", token);
+
+    // Verify the token using the secret from environment variables
+    const decoded = jwt.verify(token, JWT_SECRET);
+    console.log("decoded token : ", decoded);
+
+    if (!decoded.userId) {
+      console.error("Token missing userId:", decoded);
+      return res.status(404).json({
+        message: "Invalid token Structure",
+      });
+    }
+
+    req.userId = decoded.userId; // Attach the user information to the request
+    console.log("User authenticated, userId:", req.userId);
+  
 
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
+    console.error("Auth Middleware Error:", error);
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(403).json({
+        message: "Invalid token",
+      });
+    }
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(403).json({
+        message: "Token expired",
+      });
+    }
+
     return res.status(403).json({
-      message: "Invalid or expired token",
+      message: "Authentication failed",
     });
   }
 };

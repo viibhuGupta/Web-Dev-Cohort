@@ -21,6 +21,11 @@ const UserSchema = mongoose.Schema({
   password: { type: String, required: true, trim: true },
 });
 
+// Add this to log the full user object when it's retrieved
+UserSchema.post('findOne', function(result) {
+  console.log('User retrieved from database:', result);
+});
+
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
