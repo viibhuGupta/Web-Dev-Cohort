@@ -1,28 +1,47 @@
 const express = require("express");
-const UserModel = require("../schema/userSchema");
-const { validateUserSigninSchema } = require("../validation/userVailidateSchema");
+const {
+  validateUserSigninSchema,
+} = require("../validation/userVailidateSchema");
 const jwt = require("jsonwebtoken");
+// require("dotenv").config();
+const User = require("../schema/userSchema");
+const { JWT_SECRET } = require("../config");
 const router = express.Router();
 
-router.post("/", validateUserSigninSchema, async (req, res) => {
-  const { userName, password } = req.body;
+router.post("/signin", async (req, res) => {
+  const validation = validateUserSigninSchema.safeParse(req.body);
 
-  try {
-    const user = await UserModel.findOne({ userName: new RegExp(`^${userName}$`, "i") });
-
-    if (!user) {
-      return res.status(401).json({ message: "User does not exist" });
-    }
-
-    if (user.password !== password) {
-      return res.status(401).json({ message: "Invalid password" });
-    }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.status(200).json({ message: "User signed in successfully!", token });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (!validation.success) {
+    return res.status(201).json({
+      message: "Incorrect Input",
+      errors : validation.error.errors,
+    });
   }
+
+  const user = User.findOne({
+    userName: req.body.userName,
+    password: req.body.password,
+  });
+
+  if (user) {
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      JWT_SECRET , {expiresIn:"1h"} 
+    );
+
+    // const token = jwt.sign({ userId: user._id, iat: Math.floor(Date.now() / 1000) }, JWT_SECRET);
+
+    res.json({
+      token: token,
+    });
+    return;
+  }
+
+  res.status(411).json({
+    message: "Error while Login ",
+  });
 });
 
 module.exports = router;

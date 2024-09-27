@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-// mongoose.connect(process.env.MONGO_URI).then(() => console.log("DB connected Successfully "));
 
 // dbConnect.js
-
 
 const db = async () => {
   try {
@@ -20,5 +18,3 @@ const db = async () => {
 };
 
 module.exports = db;
-
-

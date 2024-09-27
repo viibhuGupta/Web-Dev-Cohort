@@ -1,25 +1,63 @@
 const express = require("express");
-const UserModel = require("../schema/userSchema");
-const { validateUpdateUserSchema } = require("../validation/userVailidateSchema");
-const authenticateToken = require("../middleware/authMiddleware");
+const {
+  validateUpdateUserSchema,
+} = require("../validation/userVailidateSchema");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
+const User = require("../schema/userSchema");
 
-router.put("/:id", authenticateToken, validateUpdateUserSchema, async (req, res) => {
-  const { id } = req.params;
+router.put("/update", authMiddleware, async (req, res) => {
+  const validation = validateUpdateUserSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    return res.status(401).json({
+      message: "Error while updating information",
+      errors: validation.error.errors,
+    });
+  }
+
+  const user = await User.findById(req.userId);
+  console.log("req.userId:", req.userId);
+  if (!user) {
+    return res.status(201).json({
+      message:"User not found"
+    })
+  }
 
   try {
-    const updateUser = await UserModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    // The `updateOne` method is used =>  The first argument should be the filter, and the second should be the update.
 
-    if (!updateUser) {
-      return res.status(404).json({ message: "User not found" });
+    // Not using `$set` operator: Without `$set`, MongoDB might try to replace the entire document instead of updating specific fields.
+
+    //  Not checking `matchedCount`: `nModified` is deprecated. We should check `matchedCount` to ensure a user was found.
+
+
+    const result = await User.updateOne(
+      {_id: req.userId},
+      {$set : req.body}
+    );
+
+    if (result.matchedCount === 0 ) {
+      return res.status(404).json({
+        message:"User not found "
+      })
     }
 
-    res.status(200).json({ message: "User updated successfully", updateUser });
+
+    if (result.nModified === 0) {
+      return res.status(304).json({
+        message: " no changes made",
+      }); 
+    }
+
+    res.json({
+      message: "User Update Successfully",
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      message: "Error updating user",
+      error: error.message,
+    });
   }
 });
 
