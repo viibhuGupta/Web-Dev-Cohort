@@ -10,7 +10,6 @@ const router = express.Router();
 
 router.post("/signin", async (req, res) => {
   try {
-    console.log("Sign in attempt:", req.body);
     const validation = validateUserSigninSchema.safeParse(req.body);
 
     if (!validation.success) {
@@ -26,27 +25,17 @@ router.post("/signin", async (req, res) => {
       // password: req.body.password,
     });
 
-    console.log("User found:", user ? "Yes" : "No");
-    if (user) {
-      console.log("User object:", JSON.stringify(user, null, 2));
-      console.log("User object keys:", Object.keys(user));
-      console.log("User._doc:", user._doc);
-    }
-
-    
     if (!user) {
-      console.log("user not found ");
+      // console.log("user not found ");
 
       return res.status(404).json({
         message: "Invalid username or password",
       });
     }
 
-    console.log("Stored Password", user.password);
-    console.log("Provided password", req.body.password);
-
-    if ( user.password !== req.body.password) {
-      console.log("password mismatch")
+  
+    if (user.password !== req.body.password) {
+      console.log("password mismatch");
       return res.status(401).json({
         message: "invalid username or password",
       });
@@ -56,10 +45,9 @@ router.post("/signin", async (req, res) => {
       userId: user._id.toString(),
     };
 
-    console.log("token playLoad", playLoad);
 
     const token = jwt.sign(playLoad, JWT_SECRET);
-    console.log("Generated Token ", token);
+    // console.log("Generated Token ", token);
 
     res.json({
       token: token,

@@ -3,7 +3,6 @@ const { JWT_SECRET } = require("../config");
 
 const authMiddleware = (req, res, next) => {
   try {
-    
     // Extract Authorization header
     const authHeader = req.headers.authorization;
 
@@ -16,11 +15,9 @@ const authMiddleware = (req, res, next) => {
 
     // Extract the token from the 'Bearer <token>' format
     const token = authHeader.split(" ")[1];
-    console.log("Received token : ", token);
 
     // Verify the token using the secret from environment variables
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log("decoded token : ", decoded);
 
     if (!decoded.userId) {
       console.error("Token missing userId:", decoded);
@@ -30,8 +27,6 @@ const authMiddleware = (req, res, next) => {
     }
 
     req.userId = decoded.userId; // Attach the user information to the request
-    console.log("User authenticated, userId:", req.userId);
-  
 
     next(); // Proceed to the next middleware or route handler
   } catch (error) {

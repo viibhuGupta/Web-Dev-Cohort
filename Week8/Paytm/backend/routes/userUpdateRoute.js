@@ -7,8 +7,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../schema/userSchema");
 
 router.put("/update", authMiddleware, async (req, res) => {
-  
-
   try {
     // The `updateOne` method is used =>  The first argument should be the filter, and the second should be the update.
 
@@ -25,7 +23,6 @@ router.put("/update", authMiddleware, async (req, res) => {
     }
 
     const user = await User.findById(req.userId);
-    console.log("req.userId:", req.userId);
 
     if (!user) {
       return res.status(201).json({
@@ -45,7 +42,8 @@ router.put("/update", authMiddleware, async (req, res) => {
     }
 
     if (result.modifiedCount === 0) {
-      return res.status(304).json({
+      return res.status(404).json({
+        // 304 not include response body so 304 => 404
         message: " no changes made",
       });
     }
