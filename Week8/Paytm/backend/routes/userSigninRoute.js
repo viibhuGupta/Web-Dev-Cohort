@@ -4,7 +4,7 @@ const {
 } = require("../validation/userVailidateSchema");
 const jwt = require("jsonwebtoken");
 // require("dotenv").config();
-const User = require("../schema/userSchema");
+const {User} = require("../schema/userSchema");
 const { JWT_SECRET } = require("../config");
 const router = express.Router();
 

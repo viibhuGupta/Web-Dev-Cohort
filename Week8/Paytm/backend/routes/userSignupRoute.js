@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../schema/userSchema");
+const {User} = require("../schema/userSchema");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const {

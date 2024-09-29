@@ -4,7 +4,7 @@ const {
 } = require("../validation/userVailidateSchema");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
-const User = require("../schema/userSchema");
+const { User } = require("../schema/userSchema");
 
 router.put("/update", authMiddleware, async (req, res) => {
   try {
